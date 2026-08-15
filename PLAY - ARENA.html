@@ -1,0 +1,1821 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BPM - Arena</title>
+
+    <style>
+
+        /* =====================================================
+           RESET
+        ===================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #090b10;
+            --bg-secondary: #10131a;
+            --card: #141821;
+            --card-hover: #191e29;
+
+            --border: rgba(255, 255, 255, 0.08);
+
+            --text: #f5f7fa;
+            --text-secondary: #9ca3af;
+
+            --primary: #7c5cff;
+            --primary-hover: #6847ee;
+
+            --green: #22c55e;
+            --blue: #3b82f6;
+            --yellow: #eab308;
+            --orange: #f97316;
+            --red: #ef4444;
+
+            --radius: 14px;
+        }
+
+        body {
+            font-family:
+                Inter,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at top left,
+                    rgba(124, 92, 255, 0.12),
+                    transparent 35%
+                ),
+                var(--bg);
+
+            color: var(--text);
+
+            min-height: 100vh;
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        /* =====================================================
+           CONTAINER
+        ===================================================== */
+
+        .container {
+            width: min(1400px, 94%);
+            margin: 0 auto;
+            padding: 30px 0 50px;
+        }
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 30px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+
+            border-radius: 14px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--primary),
+                    #a78bfa
+                );
+
+            font-size: 25px;
+
+            box-shadow:
+                0 10px 30px rgba(124, 92, 255, 0.25);
+        }
+
+        .brand h1 {
+            font-size: 27px;
+            letter-spacing: -0.5px;
+        }
+
+        .brand p {
+            color: var(--text-secondary);
+            margin-top: 4px;
+            font-size: 13px;
+        }
+
+        .add-button {
+            border: none;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--primary),
+                    #6847ee
+                );
+
+            color: white;
+
+            padding: 12px 20px;
+
+            border-radius: 10px;
+
+            font-weight: 600;
+
+            transition: .2s;
+
+            box-shadow:
+                0 8px 25px rgba(124, 92, 255, 0.2);
+        }
+
+        .add-button:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                0 12px 30px rgba(124, 92, 255, 0.3);
+        }
+
+        /* =====================================================
+           STATS
+        ===================================================== */
+
+        .stats {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 16px;
+
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(255,255,255,.045),
+                    rgba(255,255,255,.015)
+                );
+
+            border: 1px solid var(--border);
+
+            border-radius: var(--radius);
+
+            padding: 20px;
+
+            backdrop-filter: blur(10px);
+
+            transition: .2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+
+            background:
+                var(--card-hover);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-title {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .stat-icon {
+            width: 35px;
+            height: 35px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 9px;
+
+            background: rgba(124, 92, 255, .12);
+
+            font-size: 17px;
+        }
+
+        .stat-value {
+            font-size: 29px;
+            font-weight: 700;
+
+            margin-top: 12px;
+        }
+
+        .stat-description {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 5px;
+        }
+
+        /* =====================================================
+           CONTROLS
+        ===================================================== */
+
+        .controls {
+            display: flex;
+
+            gap: 12px;
+
+            margin-bottom: 18px;
+
+            flex-wrap: wrap;
+        }
+
+        .search {
+            flex: 1;
+            min-width: 230px;
+
+            position: relative;
+        }
+
+        .search span {
+            position: absolute;
+
+            left: 14px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            color: var(--text-secondary);
+        }
+
+        .search input {
+            width: 100%;
+
+            background: var(--card);
+
+            border: 1px solid var(--border);
+
+            color: white;
+
+            padding: 12px 14px 12px 42px;
+
+            border-radius: 10px;
+
+            outline: none;
+
+            transition: .2s;
+        }
+
+        .search input:focus {
+            border-color: var(--primary);
+            box-shadow:
+                0 0 0 3px rgba(124,92,255,.12);
+        }
+
+        .control-select {
+            background: var(--card);
+
+            border: 1px solid var(--border);
+
+            color: white;
+
+            padding: 12px 15px;
+
+            border-radius: 10px;
+
+            outline: none;
+
+            min-width: 170px;
+        }
+
+        /* =====================================================
+           TABLE
+        ===================================================== */
+
+        .table-container {
+            background:
+                rgba(20, 24, 33, .85);
+
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                var(--radius);
+
+            overflow: hidden;
+
+            box-shadow:
+                0 20px 50px rgba(0,0,0,.25);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background:
+                rgba(255,255,255,.025);
+        }
+
+        th {
+            text-align: left;
+
+            padding: 16px 20px;
+
+            font-size: 12px;
+
+            color: var(--text-secondary);
+
+            text-transform: uppercase;
+
+            letter-spacing: .7px;
+
+            border-bottom:
+                1px solid var(--border);
+        }
+
+        td {
+            padding: 17px 20px;
+
+            border-bottom:
+                1px solid var(--border);
+
+            font-size: 14px;
+        }
+
+        tbody tr {
+            transition: .2s;
+        }
+
+        tbody tr:hover {
+            background:
+                rgba(255,255,255,.025);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .music-name {
+            display: flex;
+            align-items: center;
+
+            gap: 13px;
+
+            font-weight: 600;
+        }
+
+        .music-icon {
+            width: 38px;
+            height: 38px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 9px;
+
+            background:
+                rgba(124,92,255,.12);
+
+            color:
+                #a78bfa;
+        }
+
+        .bpm {
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .bpm-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-left: 3px;
+        }
+
+        /* =====================================================
+           BADGES
+        ===================================================== */
+
+        .badge {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            padding: 6px 10px;
+
+            border-radius: 30px;
+
+            font-size: 11px;
+
+            font-weight: 700;
+        }
+
+        .badge::before {
+            content: "";
+
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: currentColor;
+        }
+
+        .slow {
+            color: var(--green);
+            background: rgba(34,197,94,.1);
+        }
+
+        .moderate {
+            color: var(--blue);
+            background: rgba(59,130,246,.1);
+        }
+
+        .medium {
+            color: var(--yellow);
+            background: rgba(234,179,8,.1);
+        }
+
+        .fast {
+            color: var(--orange);
+            background: rgba(249,115,22,.1);
+        }
+
+        .very-fast {
+            color: var(--red);
+            background: rgba(239,68,68,.1);
+        }
+
+        .variable {
+            color: #a78bfa;
+            background: rgba(124,92,255,.12);
+        }
+
+        /* =====================================================
+           ACTIONS
+        ===================================================== */
+
+        .actions {
+            display: flex;
+            gap: 7px;
+        }
+
+        .action-button {
+            width: 32px;
+            height: 32px;
+
+            border-radius: 8px;
+
+            border: 1px solid var(--border);
+
+            background:
+                rgba(255,255,255,.025);
+
+            color:
+                var(--text-secondary);
+
+            transition: .2s;
+        }
+
+        .action-button:hover {
+            color: white;
+            background: rgba(255,255,255,.08);
+        }
+
+        .delete:hover {
+            color: var(--red);
+            border-color: rgba(239,68,68,.3);
+        }
+
+        /* =====================================================
+           EMPTY
+        ===================================================== */
+
+        .empty {
+            padding: 60px 20px;
+
+            text-align: center;
+
+            color: var(--text-secondary);
+        }
+
+        .empty-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        /* =====================================================
+           MODAL
+        ===================================================== */
+
+        .modal {
+            position: fixed;
+
+            inset: 0;
+
+            background:
+                rgba(0,0,0,.72);
+
+            backdrop-filter: blur(7px);
+
+            display: none;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            z-index: 100;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            width: min(480px, 100%);
+
+            background:
+                #141821;
+
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                18px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 30px 80px rgba(0,0,0,.5);
+
+            animation:
+                modalIn .2s ease;
+        }
+
+        @keyframes modalIn {
+
+            from {
+                opacity: 0;
+                transform: translateY(15px) scale(.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+        }
+
+        .modal-header {
+            display: flex;
+
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 25px;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+        }
+
+        .close {
+            border: none;
+
+            background: transparent;
+
+            color: var(--text-secondary);
+
+            font-size: 25px;
+
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+
+            font-size: 13px;
+
+            color: var(--text-secondary);
+
+            margin-bottom: 7px;
+        }
+
+        .form-group input {
+            width: 100%;
+
+            padding: 13px;
+
+            border-radius: 9px;
+
+            border:
+                1px solid var(--border);
+
+            background:
+                #0e1117;
+
+            color: white;
+
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+        }
+
+        .form-actions {
+            display: flex;
+
+            justify-content: flex-end;
+
+            gap: 10px;
+
+            margin-top: 25px;
+        }
+
+        .cancel {
+            border:
+                1px solid var(--border);
+
+            background:
+                transparent;
+
+            color:
+                var(--text-secondary);
+
+            padding:
+                11px 18px;
+
+            border-radius:
+                9px;
+        }
+
+        .save {
+            border: none;
+
+            background:
+                var(--primary);
+
+            color: white;
+
+            padding:
+                11px 20px;
+
+            border-radius:
+                9px;
+
+            font-weight: 600;
+        }
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .footer {
+            text-align: center;
+
+            color:
+                var(--text-secondary);
+
+            font-size: 12px;
+
+            margin-top: 20px;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 850px) {
+
+            .stats {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 750px;
+            }
+
+        }
+
+        @media (max-width: 550px) {
+
+            .container {
+                width: 92%;
+                padding-top: 20px;
+            }
+
+            .header {
+                align-items: flex-start;
+            }
+
+            .brand h1 {
+                font-size: 21px;
+            }
+
+            .logo {
+                width: 42px;
+                height: 42px;
+            }
+
+            .add-button {
+                padding: 10px 13px;
+                font-size: 12px;
+            }
+
+            .stats {
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 15px;
+            }
+
+            .stat-value {
+                font-size: 23px;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <header class="header">
+
+            <div class="brand">
+
+                <div class="logo">
+                    🎵
+                </div>
+
+                <div>
+                    <h1>BPM - ARENA</h1>
+
+                    <p>
+                        Controle e organização das músicas
+                    </p>
+                </div>
+
+            </div>
+
+            <button
+                class="add-button"
+                onclick="abrirModal()">
+
+                ＋ Nova música
+
+            </button>
+
+        </header>
+
+
+        <!-- =================================================
+             ESTATÍSTICAS
+        ================================================== -->
+
+        <section class="stats">
+
+            <div class="stat-card">
+
+                <div class="stat-header">
+
+                    <span class="stat-title">
+                        Total de músicas
+                    </span>
+
+                    <span class="stat-icon">
+                        🎵
+                    </span>
+
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="totalMusicas">
+                    0
+                </div>
+
+                <div class="stat-description">
+                    músicas cadastradas
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-header">
+
+                    <span class="stat-title">
+                        BPM médio
+                    </span>
+
+                    <span class="stat-icon">
+                        📊
+                    </span>
+
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="bpmMedio">
+                    0
+                </div>
+
+                <div class="stat-description">
+                    batidas por minuto
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-header">
+
+                    <span class="stat-title">
+                        Maior BPM
+                    </span>
+
+                    <span class="stat-icon">
+                        🔥
+                    </span>
+
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="maiorBpm">
+                    0
+                </div>
+
+                <div class="stat-description">
+                    música mais rápida
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-header">
+
+                    <span class="stat-title">
+                        Menor BPM
+                    </span>
+
+                    <span class="stat-icon">
+                        🐢
+                    </span>
+
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="menorBpm">
+                    0
+                </div>
+
+                <div class="stat-description">
+                    música mais lenta
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             FILTROS
+        ================================================== -->
+
+        <section class="controls">
+
+            <div class="search">
+
+                <span>🔎</span>
+
+                <input
+                    type="text"
+                    id="pesquisa"
+                    placeholder="Pesquisar música..."
+                    oninput="renderizar()">
+
+            </div>
+
+
+            <select
+                class="control-select"
+                id="filtro"
+                onchange="renderizar()">
+
+                <option value="todos">
+                    Todas as velocidades
+                </option>
+
+                <option value="lento">
+                    🟢 Lento
+                </option>
+
+                <option value="moderado">
+                    🔵 Moderado
+                </option>
+
+                <option value="medio">
+                    🟡 Médio
+                </option>
+
+                <option value="rapido">
+                    🟠 Rápido
+                </option>
+
+                <option value="muito-rapido">
+                    🔴 Muito rápido
+                </option>
+
+            </select>
+
+
+            <select
+                class="control-select"
+                id="ordenacao"
+                onchange="renderizar()">
+
+                <option value="nome">
+                    A-Z
+                </option>
+
+                <option value="nome-desc">
+                    Z-A
+                </option>
+
+                <option value="bpm-asc">
+                    BPM menor → maior
+                </option>
+
+                <option value="bpm-desc">
+                    BPM maior → menor
+                </option>
+
+            </select>
+
+        </section>
+
+
+        <!-- =================================================
+             TABELA
+        ================================================== -->
+
+        <section class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Música
+                        </th>
+
+                        <th>
+                            BPM
+                        </th>
+
+                        <th>
+                            Velocidade
+                        </th>
+
+                        <th>
+                            Ações
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="tabelaMusicas"></tbody>
+
+            </table>
+
+            <div
+                class="empty"
+                id="mensagemVazia"
+                style="display:none;">
+
+                <div class="empty-icon">
+                    🎵
+                </div>
+
+                <p>
+                    Nenhuma música encontrada.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <div class="footer">
+
+            BPM - ARENA • Dados salvos automaticamente neste navegador
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         MODAL
+    ====================================================== -->
+
+    <div
+        class="modal"
+        id="modal">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h2 id="tituloModal">
+                    Nova música
+                </h2>
+
+                <button
+                    class="close"
+                    onclick="fecharModal()">
+
+                    ×
+
+                </button>
+
+            </div>
+
+
+            <form
+                id="formMusica"
+                onsubmit="salvarMusica(event)">
+
+                <div class="form-group">
+
+                    <label>
+                        Nome da música
+                    </label>
+
+                    <input
+                        type="text"
+                        id="nomeMusica"
+                        placeholder="Ex.: Você Veio"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        BPM
+                    </label>
+
+                    <input
+                        type="number"
+                        id="valorBpm"
+                        placeholder="Ex.: 165"
+                        min="1"
+                        max="400"
+                        required>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="cancel"
+                        onclick="fecharModal()">
+
+                        Cancelar
+
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="save">
+
+                        Salvar música
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        /* =====================================================
+           DADOS INICIAIS
+        ===================================================== */
+
+        let musicas = JSON.parse(
+            localStorage.getItem("bpmArena")
+        ) || [
+
+            {
+                id: 1,
+                nome: "Você Veio",
+                bpm: 165
+            },
+
+            {
+                id: 2,
+                nome: "Dançar na Chuva",
+                bpm: 154
+            },
+
+            {
+                id: 3,
+                nome: "Por Amor",
+                bpm: 145
+            },
+
+            {
+                id: 4,
+                nome: "Ide",
+                bpm: 143
+            },
+
+            {
+                id: 5,
+                nome: "Compartilhar o Amor",
+                bpm: 185
+            },
+
+            {
+                id: 6,
+                nome: "Meia Noite",
+                bpm: 98
+            },
+
+            {
+                id: 7,
+                nome: "No Trono",
+                bpm: 133
+            }
+
+        ];
+
+
+        let editandoId = null;
+
+
+        /* =====================================================
+           CLASSIFICAÇÃO BPM
+        ===================================================== */
+
+        function classificarBpm(bpm) {
+
+            if (bpm < 80) {
+
+                return {
+                    classe: "slow",
+                    texto: "Lento",
+                    filtro: "lento"
+                };
+
+            }
+
+            if (bpm < 120) {
+
+                return {
+                    classe: "moderate",
+                    texto: "Moderado",
+                    filtro: "moderado"
+                };
+
+            }
+
+            if (bpm < 140) {
+
+                return {
+                    classe: "medium",
+                    texto: "Médio",
+                    filtro: "medio"
+                };
+
+            }
+
+            if (bpm < 160) {
+
+                return {
+                    classe: "fast",
+                    texto: "Rápido",
+                    filtro: "rapido"
+                };
+
+            }
+
+            return {
+                classe: "very-fast",
+                texto: "Muito rápido",
+                filtro: "muito-rapido"
+            };
+
+        }
+
+
+        /* =====================================================
+           SALVAR
+        ===================================================== */
+
+        function salvarDados() {
+
+            localStorage.setItem(
+                "bpmArena",
+                JSON.stringify(musicas)
+            );
+
+        }
+
+
+        /* =====================================================
+           RENDERIZAR
+        ===================================================== */
+
+        function renderizar() {
+
+            const tabela =
+                document.getElementById(
+                    "tabelaMusicas"
+                );
+
+            const mensagem =
+                document.getElementById(
+                    "mensagemVazia"
+                );
+
+            const pesquisa =
+                document.getElementById(
+                    "pesquisa"
+                )
+                .value
+                .toLowerCase();
+
+            const filtro =
+                document.getElementById(
+                    "filtro"
+                ).value;
+
+            const ordenacao =
+                document.getElementById(
+                    "ordenacao"
+                ).value;
+
+
+            let resultado =
+                musicas.filter(musica => {
+
+                    const correspondeNome =
+                        musica.nome
+                            .toLowerCase()
+                            .includes(pesquisa);
+
+                    const categoria =
+                        classificarBpm(
+                            musica.bpm
+                        );
+
+                    const correspondeFiltro =
+                        filtro === "todos" ||
+                        categoria.filtro === filtro;
+
+                    return (
+                        correspondeNome &&
+                        correspondeFiltro
+                    );
+
+                });
+
+
+            /* ORDENAR */
+
+            resultado.sort((a, b) => {
+
+                switch (ordenacao) {
+
+                    case "nome":
+                        return a.nome.localeCompare(
+                            b.nome
+                        );
+
+                    case "nome-desc":
+                        return b.nome.localeCompare(
+                            a.nome
+                        );
+
+                    case "bpm-asc":
+                        return a.bpm - b.bpm;
+
+                    case "bpm-desc":
+                        return b.bpm - a.bpm;
+
+                }
+
+            });
+
+
+            tabela.innerHTML = "";
+
+
+            if (resultado.length === 0) {
+
+                mensagem.style.display = "block";
+
+            } else {
+
+                mensagem.style.display = "none";
+
+            }
+
+
+            resultado.forEach(musica => {
+
+                const categoria =
+                    classificarBpm(
+                        musica.bpm
+                    );
+
+
+                const linha =
+                    document.createElement("tr");
+
+
+                linha.innerHTML = `
+
+                    <td>
+
+                        <div class="music-name">
+
+                            <div class="music-icon">
+                                ♪
+                            </div>
+
+                            ${musica.nome}
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="bpm">
+                            ${musica.bpm}
+                        </span>
+
+                        <span class="bpm-label">
+                            BPM
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <span
+                            class="badge ${categoria.classe}">
+
+                            ${categoria.texto}
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <div class="actions">
+
+                            <button
+                                class="action-button"
+                                title="Editar"
+                                onclick="editarMusica(${musica.id})">
+
+                                ✏️
+
+                            </button>
+
+
+                            <button
+                                class="action-button delete"
+                                title="Excluir"
+                                onclick="excluirMusica(${musica.id})">
+
+                                🗑️
+
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                `;
+
+
+                tabela.appendChild(linha);
+
+            });
+
+
+            atualizarEstatisticas();
+
+        }
+
+
+        /* =====================================================
+           ESTATÍSTICAS
+        ===================================================== */
+
+        function atualizarEstatisticas() {
+
+            const total =
+                musicas.length;
+
+
+            document.getElementById(
+                "totalMusicas"
+            ).textContent = total;
+
+
+            if (total === 0) {
+
+                document.getElementById(
+                    "bpmMedio"
+                ).textContent = 0;
+
+                document.getElementById(
+                    "maiorBpm"
+                ).textContent = 0;
+
+                document.getElementById(
+                    "menorBpm"
+                ).textContent = 0;
+
+                return;
+
+            }
+
+
+            const bpms =
+                musicas.map(
+                    musica => Number(musica.bpm)
+                );
+
+
+            const media =
+                bpms.reduce(
+                    (total, bpm) =>
+                        total + bpm,
+                    0
+                ) / bpms.length;
+
+
+            document.getElementById(
+                "bpmMedio"
+            ).textContent =
+                Math.round(media);
+
+
+            document.getElementById(
+                "maiorBpm"
+            ).textContent =
+                Math.max(...bpms);
+
+
+            document.getElementById(
+                "menorBpm"
+            ).textContent =
+                Math.min(...bpms);
+
+        }
+
+
+        /* =====================================================
+           ABRIR MODAL
+        ===================================================== */
+
+        function abrirModal() {
+
+            editandoId = null;
+
+            document.getElementById(
+                "tituloModal"
+            ).textContent =
+                "Nova música";
+
+            document.getElementById(
+                "formMusica"
+            ).reset();
+
+            document.getElementById(
+                "modal"
+            ).classList.add("active");
+
+            setTimeout(() => {
+
+                document.getElementById(
+                    "nomeMusica"
+                ).focus();
+
+            }, 100);
+
+        }
+
+
+        /* =====================================================
+           FECHAR MODAL
+        ===================================================== */
+
+        function fecharModal() {
+
+            document.getElementById(
+                "modal"
+            ).classList.remove("active");
+
+            editandoId = null;
+
+        }
+
+
+        /* =====================================================
+           SALVAR / EDITAR
+        ===================================================== */
+
+        function salvarMusica(event) {
+
+            event.preventDefault();
+
+
+            const nome =
+                document.getElementById(
+                    "nomeMusica"
+                ).value.trim();
+
+
+            const bpm =
+                Number(
+                    document.getElementById(
+                        "valorBpm"
+                    ).value
+                );
+
+
+            if (!nome || !bpm) {
+
+                return;
+
+            }
+
+
+            if (editandoId !== null) {
+
+                const musica =
+                    musicas.find(
+                        musica =>
+                            musica.id ===
+                            editandoId
+                    );
+
+
+                musica.nome = nome;
+
+                musica.bpm = bpm;
+
+            } else {
+
+                musicas.push({
+
+                    id:
+                        Date.now(),
+
+                    nome:
+                        nome,
+
+                    bpm:
+                        bpm
+
+                });
+
+            }
+
+
+            salvarDados();
+
+            renderizar();
+
+            fecharModal();
+
+        }
+
+
+        /* =====================================================
+           EDITAR
+        ===================================================== */
+
+        function editarMusica(id) {
+
+            const musica =
+                musicas.find(
+                    musica =>
+                        musica.id === id
+                );
+
+
+            if (!musica) {
+                return;
+            }
+
+
+            editandoId = id;
+
+
+            document.getElementById(
+                "tituloModal"
+            ).textContent =
+                "Editar música";
+
+
+            document.getElementById(
+                "nomeMusica"
+            ).value =
+                musica.nome;
+
+
+            document.getElementById(
+                "valorBpm"
+            ).value =
+                musica.bpm;
+
+
+            document.getElementById(
+                "modal"
+            ).classList.add("active");
+
+        }
+
+
+        /* =====================================================
+           EXCLUIR
+        ===================================================== */
+
+        function excluirMusica(id) {
+
+            const musica =
+                musicas.find(
+                    musica =>
+                        musica.id === id
+                );
+
+
+            if (!musica) {
+                return;
+            }
+
+
+            const confirmar =
+                confirm(
+                    `Deseja excluir "${musica.nome}"?`
+                );
+
+
+            if (!confirmar) {
+                return;
+            }
+
+
+            musicas =
+                musicas.filter(
+                    musica =>
+                        musica.id !== id
+                );
+
+
+            salvarDados();
+
+            renderizar();
+
+        }
+
+
+        /* =====================================================
+           FECHAR COM ESC
+        ===================================================== */
+
+        document.addEventListener(
+            "keydown",
+            function(event) {
+
+                if (
+                    event.key === "Escape"
+                ) {
+
+                    fecharModal();
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           FECHAR CLICANDO FORA
+        ===================================================== */
+
+        document.getElementById(
+            "modal"
+        ).addEventListener(
+            "click",
+            function(event) {
+
+                if (
+                    event.target === this
+                ) {
+
+                    fecharModal();
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           INICIALIZAÇÃO
+        ===================================================== */
+
+        renderizar();
+
+    </script>
+
+</body>
+
+</html>
